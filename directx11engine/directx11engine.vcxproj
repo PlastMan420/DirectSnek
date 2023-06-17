@@ -154,7 +154,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Adapter\AdapterReader.cpp" />
-    <ClCompile Include="Gfx\Model.cpp" />
+    <ClCompile Include="Gfx\game\GameModel.cpp" />
+    <ClCompile Include="Gfx\game\ArenaModel.cpp" />
     <ClCompile Include="Helpers\COMException.cpp" />
     <ClCompile Include="Gfx\Camera.cpp" />
     <ClCompile Include="Engine.cpp" />
@@ -169,20 +170,23 @@
     <ClCompile Include="Helpers\ErrorLogger.cpp" />
     <ClCompile Include="Keyboard\KeyboardClass.cpp" />
     <ClCompile Include="Keyboard\KeyboardEvent.cpp" />
+    <ClCompile Include="Gfx\abstract\BaseModel.cpp" />
     <ClCompile Include="Mouse\MouseEvent.cpp" />
     <ClCompile Include="Mouse\MouseClass.cpp" />
     <ClCompile Include="RenderWindow.cpp" />
     <ClCompile Include="Gfx\Shaders.cpp" />
+    <ClCompile Include="Gfx\game\SnekModel.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="Helpers\StringConverter.cpp" />
     <ClCompile Include="Gfx\Vertex.cpp" />
     <ClCompile Include="Gfx\VertexBuffer.cpp" />
-    <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="Helpers\Timer.cpp" />
     <ClCompile Include="WindowContainer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Adapter\AdapterReader.h" />
-    <ClInclude Include="Gfx\Model.h" />
+    <ClInclude Include="Gfx\game\GameModel.h" />
+    <ClInclude Include="Gfx\game\ArenaModel.h" />
     <ClInclude Include="Helpers\COMException.h" />
     <ClInclude Include="Gfx\Camera.h" />
     <ClInclude Include="Engine.h" />
@@ -202,13 +206,15 @@
     <ClInclude Include="Helpers\ErrorLogger.h" />
     <ClInclude Include="Keyboard\KeyboardClass.h" />
     <ClInclude Include="Keyboard\KeyboardEvent.h" />
+    <ClInclude Include="Gfx\abstract\BaseModel.h" />
     <ClInclude Include="Mouse\MouseEvent.h" />
     <ClInclude Include="RenderWindow.h" />
     <ClInclude Include="Helpers\StringConverter.h" />
     <ClInclude Include="Gfx\Vertex.h" />
     <ClInclude Include="Gfx\Shaders.h" />
     <ClInclude Include="Gfx\VertexBuffer.h" />
-    <ClInclude Include="Timer.h" />
+    <ClInclude Include="Helpers\Timer.h" />
+    <ClInclude Include="Gfx\game\SnekModel.h" />
     <ClInclude Include="WindowContainer.h" />
   </ItemGroup>
   <ItemGroup>

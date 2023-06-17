@@ -33,7 +33,7 @@ void Engine::Update()
 		KeyboardEvent kbe = keyboard.ReadKey();
 		unsigned char keycode = kbe.GetKeyCode();
 		int kb = this->ReadInput();
-		this->gfx.UpdateDirection(kb);
+		this->gfx.game.UpdateDirection(kb);
 	}
 
 	/*while (!mouse.EventBufferIsEmpty())

@@ -87,7 +87,7 @@
     <ClCompile Include="Engine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Timer.cpp">
+    <ClCompile Include="Helpers\Timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Gfx\imgui\imgui.cpp">
@@ -114,7 +114,16 @@
     <ClCompile Include="Helpers\COMException.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Gfx\Model.cpp">
+    <ClCompile Include="Gfx\game\ArenaModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Gfx\game\SnekModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Gfx\abstract\BaseModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Gfx\game\GameModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -170,7 +179,7 @@
     <ClInclude Include="Engine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Timer.h">
+    <ClInclude Include="Helpers\Timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Gfx\imgui\imconfig.h">
@@ -203,7 +212,16 @@
     <ClInclude Include="Helpers\COMException.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Gfx\Model.h">
+    <ClInclude Include="Gfx\game\ArenaModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Gfx\game\SnekModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Gfx\abstract\BaseModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Gfx\game\GameModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
