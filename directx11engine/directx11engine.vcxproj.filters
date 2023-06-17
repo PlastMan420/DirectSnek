@@ -117,9 +117,6 @@
     <ClCompile Include="Gfx\Model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Gfx\game\arena.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Helpers\StringConverter.h">
@@ -209,9 +206,6 @@
     <ClInclude Include="Gfx\Model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Gfx\game\arena.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\vertexshader.hlsl">
@@ -226,5 +220,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="data\textures\brick.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

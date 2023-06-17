@@ -16,7 +16,7 @@ public:
 	bool ProcessMessages();
 	void Update();
 	void RenderFrame();
-
+	int ReadInput();
 private:
 	Timer timer;
 };

@@ -23,12 +23,12 @@ WindowContainer::WindowContainer()
 	}
 }
 
-extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+//extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 LRESULT WindowContainer::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 {
 	//route all messages to imgui when proc handler
-	if (ImGui_ImplWin32_WndProcHandler(hwnd, uMsg, wParam, lParam))
-		return true;
+	//if (ImGui_ImplWin32_WndProcHandler(hwnd, uMsg, wParam, lParam))
+	//	return true;
 
 	int mousex = LOWORD(lParam);
 	int mousey = HIWORD(lParam);
@@ -121,6 +121,13 @@ LRESULT WindowContainer::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM 
 					}
 				}
 			}
+		}
+		case WM_DESTROY: {
+			PostQuitMessage(0);
+			return 0;
+		}
+		case WM_PAINT: {
+			this->gfx.RenderFrame();
 		}
 		default: {
 			return DefWindowProc(hwnd, uMsg, wParam, lParam);

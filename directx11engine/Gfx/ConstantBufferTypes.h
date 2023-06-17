@@ -6,5 +6,8 @@ struct CB_VS_vertexshader {
 };
 
 struct CB_PS_pixelshader {
-	float alpha = 1.0f;
+    DirectX::XMFLOAT4 color;
+    DirectX::XMFLOAT2 dimensions;
+    float radius;
+    float na;
 };
