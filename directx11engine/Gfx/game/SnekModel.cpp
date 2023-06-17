@@ -1,9 +1,5 @@
 #include "SnekModel.h"
 
-SnekModel::SnekModel()
-{
-}
-
 void SnekModel::Init()
 {
 	this->xpos = 0;
@@ -95,7 +91,11 @@ void SnekModel::UpdateDirection(int dirEnum)
 		return;
 	}
 
-	if (dirEnum > 2 && (dirEnum - 2 == direction))
+	if (dirEnum > 2 && (direction == dirEnum - 2))
+	{
+		return;
+	}
+	else if (dirEnum < 3 && (direction == dirEnum + 2))
 	{
 		return;
 	}

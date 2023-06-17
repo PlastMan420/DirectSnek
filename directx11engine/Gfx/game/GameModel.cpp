@@ -70,6 +70,7 @@ void GameModel::RunDemo()
 void GameModel::Init(ID2D1HwndRenderTarget* _renderTarget)
 {
 	arena.Init(_renderTarget);
+	snek.Init();
 }
 
 void GameModel::Reset()

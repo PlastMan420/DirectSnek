@@ -6,7 +6,6 @@
 class SnekModel : BaseModel
 {
 public:
-    SnekModel();
     void Draw(ID2D1HwndRenderTarget* _renderTarget, ID2D1SolidColorBrush* _sBrush);
 	void UpdateDirection(int dirEnum);
 	void Reset();
@@ -23,7 +22,5 @@ public:
 
 private:
     std::queue<D2D1_POINT_2F> snekPath;
-	//Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> _sBrush;
-
 };
 
