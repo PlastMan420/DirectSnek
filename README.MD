@@ -1,1 +1,3 @@
-Special thanks to Jpres for his wonderful DirectX tutorial https://www.youtube.com/@Jpres
+A Snake game in DirectX D2D.
+
+Special thanks to [Jpres](https://www.youtube.com/@Jpres) for his wonderful DirectX tutorial.
