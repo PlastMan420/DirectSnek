@@ -1,9 +1,9 @@
 #pragma once
 #include "../abstract/BaseModel.h"
 #include <queue>
-#include <wrl/client.h>
+#include "../../Helpers/ErrorLogger.h"
 
-class SnekModel : BaseModel
+class SnekModel : public BaseModel
 {
 public:
     void Draw(ID2D1HwndRenderTarget* _renderTarget, ID2D1SolidColorBrush* _sBrush);
@@ -18,9 +18,10 @@ public:
 	int direction;
 	const int step = 50;
 
-	dxdRect snekBox;
+	//dxdRect snekBox;
 
 private:
+	bool initRan = false;
     std::queue<D2D1_POINT_2F> snekPath;
 };
 

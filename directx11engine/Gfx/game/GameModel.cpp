@@ -78,13 +78,13 @@ void GameModel::Reset()
 	snek.Reset();
 }
 
-void GameModel::GenRange()
+D2D1_POINT_2F GameModel::GenRange()
 {
 	srand(time(0));
-	int xco = rand() % 301 + 300;
-	int yco = rand() % 301 + 300;
+	int xco = rand() % 301 + 150;
+	int yco = rand() % 301 + 150;
 
-	//D2D1::Point2F(xco, 150 + this->ypos);
+	return D2D1::Point2F(xco, yco);
 }
 void GameModel::Clean()
 {
@@ -96,8 +96,23 @@ void GameModel::Update(ID2D1HwndRenderTarget* _renderTarget, ID2D1SolidColorBrus
 	//draw arena
 	arena.Draw(_renderTarget);
 
+	if (!weGotDinner)
+	{
+		D2D1_POINT_2F foodGenCo = GenRange();
+		food.GenFood(foodGenCo);
+
+		weGotDinner = true;
+	}
+
+	food.Draw(_renderTarget);
+
+	if (food.Intersects(snek))
+	{
+		weGotDinner = false;
+	}
+
 	//check for collision
-	if (arena.Intersects(&snek.snekBox)) {
+	if (arena.Intersects(snek)) {
 		Reset();
 	}
 

@@ -1,8 +1,10 @@
 #pragma once
 #include "ArenaModel.h"
 #include "SnekModel.h"
+#include "GoalModel.h"
 #include <cstdlib>
 #include <ctime>
+#include "../../Helpers/ErrorLogger.h"
 
 class GameModel
 {
@@ -16,9 +18,9 @@ public:
 
 	ArenaModel arena;
 	SnekModel snek;
+	GoalModel food;
 
 private:
-	void GenRange();
-
+	D2D1_POINT_2F GenRange();
+	bool weGotDinner = false;
 };
-

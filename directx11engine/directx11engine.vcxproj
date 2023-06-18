@@ -156,6 +156,7 @@
     <ClCompile Include="Adapter\AdapterReader.cpp" />
     <ClCompile Include="Gfx\game\GameModel.cpp" />
     <ClCompile Include="Gfx\game\ArenaModel.cpp" />
+    <ClCompile Include="Gfx\game\GoalModel.cpp" />
     <ClCompile Include="Helpers\COMException.cpp" />
     <ClCompile Include="Gfx\Camera.cpp" />
     <ClCompile Include="Engine.cpp" />
@@ -170,7 +171,6 @@
     <ClCompile Include="Helpers\ErrorLogger.cpp" />
     <ClCompile Include="Keyboard\KeyboardClass.cpp" />
     <ClCompile Include="Keyboard\KeyboardEvent.cpp" />
-    <ClCompile Include="Gfx\abstract\BaseModel.cpp" />
     <ClCompile Include="Mouse\MouseEvent.cpp" />
     <ClCompile Include="Mouse\MouseClass.cpp" />
     <ClCompile Include="RenderWindow.cpp" />
@@ -187,6 +187,7 @@
     <ClInclude Include="Adapter\AdapterReader.h" />
     <ClInclude Include="Gfx\game\GameModel.h" />
     <ClInclude Include="Gfx\game\ArenaModel.h" />
+    <ClInclude Include="Gfx\game\GoalModel.h" />
     <ClInclude Include="Helpers\COMException.h" />
     <ClInclude Include="Gfx\Camera.h" />
     <ClInclude Include="Engine.h" />

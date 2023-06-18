@@ -120,10 +120,10 @@
     <ClCompile Include="Gfx\game\SnekModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Gfx\abstract\BaseModel.cpp">
+    <ClCompile Include="Gfx\game\GameModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Gfx\game\GameModel.cpp">
+    <ClCompile Include="Gfx\game\GoalModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -222,6 +222,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Gfx\game\GameModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Gfx\game\GoalModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

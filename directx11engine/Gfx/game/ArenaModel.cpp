@@ -14,6 +14,14 @@ void ArenaModel::clean()
 void ArenaModel::Draw(ID2D1HwndRenderTarget* renderTarget)
 {
 	try {
+		HRESULT hr;
+
+		if (!initRan)
+		{
+			hr = E_ABORT;
+			COM_ERROR_IF_FAILED(hr, "Init() neglected. Please run the Init() of your class.");
+		}
+
 		//HRESULT hr;
 		D2D1_SIZE_F rtSize = renderTarget->GetSize();
 
@@ -34,8 +42,9 @@ void ArenaModel::UseBrickTextureBrush(ID2D1HwndRenderTarget* renderTarget)
 {
 	try
 	{
+		HRESULT hr;
 		IWICImagingFactory* wicF = NULL;
-		HRESULT hr = CoCreateInstance(
+		hr = CoCreateInstance(
 			CLSID_WICImagingFactory,
 			NULL,
 			CLSCTX_INPROC_SERVER,
@@ -96,7 +105,7 @@ void ArenaModel::UseBrickTextureBrush(ID2D1HwndRenderTarget* renderTarget)
 	}
 }
 
-bool ArenaModel::Intersects(dxdRect* rect)
+bool ArenaModel::Intersects(BaseModel model)
 {
 	dxdRect arenaBoxTop(50, 0, 750, 1); //x: 50 -> 700, y: 100 -> 116
 	dxdRect arenaBoxBottom(50, 500, 750, 1); // x: 50 -> 700, y: 450: 466
@@ -104,16 +113,16 @@ bool ArenaModel::Intersects(dxdRect* rect)
 	dxdRect arenaBoxRight(800, 120, 1, 600); // x: 750 -> 166, y: 120 -> 720
 	dxdRect arenaBoxLeft(10, 120, 1, 600); // x: 50 -> 66, y: 120: 720
 
-	if (rect->Intersects(arenaBoxTop)) {
+	if (model.hitBox.Intersects(arenaBoxTop)) {
 		return true;
 	}
-	else if (rect->Intersects(arenaBoxBottom)) {
+	else if (model.hitBox.Intersects(arenaBoxBottom)) {
 		return true;
 	}
-	else if (rect->Intersects(arenaBoxRight)) {
+	else if (model.hitBox.Intersects(arenaBoxRight)) {
 		return true;
 	}
-	else if (rect->Intersects(arenaBoxLeft)) {
+	else if (model.hitBox.Intersects(arenaBoxLeft)) {
 		return true;
 	}
 
@@ -123,4 +132,6 @@ bool ArenaModel::Intersects(dxdRect* rect)
 void ArenaModel::Init(ID2D1HwndRenderTarget* renderTarget)
 {
 	UseBrickTextureBrush(renderTarget);
+
+	initRan = true;
 }
