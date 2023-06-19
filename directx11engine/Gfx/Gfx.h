@@ -36,6 +36,7 @@ private:
 	int fpsCounter;
 	int lastFps;
 
+	//DXGI COM Pointers
 	Microsoft::WRL::ComPtr<ID3D11Device> device;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> deviceContext;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> swapChain;
@@ -49,6 +50,8 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> depthStencilState;
 	Microsoft::WRL::ComPtr<ID3D11SamplerState> samplerState;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> depthStencilBuffer;
+
+	// Textures
 	//Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> texture;
 	//Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> grassTexture;
 	//Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> pinkTexture;
@@ -57,24 +60,16 @@ private:
 	//ConstantBuffer<CB_VS_vertexshader> cb_vs_vertexshader;
 	//ConstantBuffer<CB_PS_pixelshader> cb_ps_pixelshader;
 
+	//D2D COM Pointers
+	Microsoft::WRL::ComPtr<ID2D1Factory> d2dfactory;
+	Microsoft::WRL::ComPtr<ID2D1HwndRenderTarget> renderTarget;
+	Microsoft::WRL::ComPtr<IDWriteFactory> dwFactory;
+	Microsoft::WRL::ComPtr<IDWriteTextFormat> dwTextFormat;
+	Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> sBrush;
+
 	VertexShader vertexShader;
 	PixelShader pixelShader;
 
-	Microsoft::WRL::ComPtr<ID2D1Factory> d2dfactory;
-	Microsoft::WRL::ComPtr<ID2D1HwndRenderTarget> renderTarget;
-	//Microsoft::WRL::ComPtr<IDWriteFactory> dwFactory;
-	//Microsoft::WRL::ComPtr<IDWriteTextFormat> dwTextFormat;
-	//Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> sBrush;
-	//Microsoft::WRL::ComPtr<ID2D1PathGeometry> sBrush;
-
-	//ID2D1Factory* d2dfactory;
-	//ID2D1HwndRenderTarget* renderTarget;
-	IDWriteFactory* dwFactory;
-	IDWriteTextFormat* dwTextFormat;
-	ID2D1SolidColorBrush* sBrush;
-	//ID2D1PathGeometry* snekGeometry;
-
-	//they are unique pointers cause they will reclaim themselves after exiting the scope
 	std::unique_ptr<DirectX::SpriteBatch> spriteBatch;
 	std::unique_ptr<DirectX::SpriteFont> spriteFont;
 

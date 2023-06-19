@@ -8,19 +8,7 @@ Gfx::Gfx()
 
 Gfx::~Gfx()
 {
-	// Release all COM
 
-	if (this->dwFactory) {
-		dwFactory->Release();
-	}
-
-	if (this->dwTextFormat) {
-		dwTextFormat->Release();
-	}
-
-	if (this->sBrush) {
-		sBrush->Release();
-	}
 }
 
 bool Gfx::Initialize(HWND hwnd, int width, int height)
@@ -62,7 +50,7 @@ void Gfx::RenderFrame()
 
 	BeginDraw();
 	ClearScreen(0.0f, 0.0f, 0.0f);
-	game.Update(renderTarget.Get(), sBrush);
+	game.Update(renderTarget.Get(), sBrush.Get());
 
 	CountFps();
 
@@ -88,9 +76,9 @@ void Gfx::CountFps()
 		this->renderTarget->DrawTextW(
 			txt.c_str(),
 			txt.length(),
-			this->dwTextFormat,
+			this->dwTextFormat.Get(),
 			D2D1::RectF(0, 0, renderTargetSize.width, renderTargetSize.height),
-			sBrush
+			sBrush.Get()
 		);
 
 		this->fpsCounter = 0;
@@ -103,9 +91,9 @@ void Gfx::CountFps()
 		this->renderTarget->DrawTextW(
 			txt.c_str(),
 			txt.length(),
-			this->dwTextFormat,
+			this->dwTextFormat.Get(),
 			D2D1::RectF(0, 0, renderTargetSize.width, renderTargetSize.height),
-			sBrush
+			sBrush.Get()
 		);
 	}
 }
@@ -288,7 +276,7 @@ bool Gfx::InitializeDirectX(HWND hwnd)
 		hr = DWriteCreateFactory(
 			DWRITE_FACTORY_TYPE_SHARED,
 			__uuidof(dwFactory),
-			reinterpret_cast<IUnknown**>(&dwFactory)
+			reinterpret_cast<IUnknown**>(dwFactory.GetAddressOf())
 		);
 		COM_ERROR_IF_FAILED(hr, "Failed init DWrite.");
 
