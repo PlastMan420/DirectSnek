@@ -10,6 +10,15 @@ void SnekModel::Init()
 	initRan = true;
 }
 
+int SnekModel::Grow()
+{
+	D2D1_POINT_2F head = D2D1::Point2F(100 + this->xpos, 150 + this->ypos);
+
+	snekPath.push(head);
+
+	return snekPath.size();
+}
+
 void SnekModel::Draw(ID2D1HwndRenderTarget* _renderTarget, ID2D1SolidColorBrush* _sBrush)
 {
 	try {
@@ -21,7 +30,7 @@ void SnekModel::Draw(ID2D1HwndRenderTarget* _renderTarget, ID2D1SolidColorBrush*
 			COM_ERROR_IF_FAILED(hr, "Init() neglected. Please run the Init() of your class.");
 		}
 
-		if (snekPath.size() == 0)
+		if (snekPath.empty())
 		{
 			snekPath.push(D2D1::Point2F(350 + this->xpos, 150 + this->ypos)); //tail first in first out
 			snekPath.push(D2D1::Point2F(300 + this->xpos, 150 + this->ypos)); //body
@@ -34,39 +43,7 @@ void SnekModel::Draw(ID2D1HwndRenderTarget* _renderTarget, ID2D1SolidColorBrush*
 		if (xpos < 0 || xpos > 600) Reset();
 		if (ypos < 0 || ypos > 600) Reset();
 
-		//fifo. pop removes tail. push adds head
-		D2D1_POINT_2F tail = snekPath.front();
-		snekPath.pop();
-
-		D2D1_POINT_2F body = snekPath.front();
-		snekPath.pop();
-
-		D2D1_POINT_2F body2 = snekPath.front();
-		snekPath.pop();
-
-		D2D1_POINT_2F head = snekPath.front();
-		snekPath.pop();
-
-		_renderTarget->DrawLine(
-			head,
-			body2,
-			_sBrush,
-			2.5f
-		);
-
-		_renderTarget->DrawLine(
-			body2,
-			body,
-			_sBrush,
-			2.5f
-		);
-
-		_renderTarget->DrawLine(
-			body,
-			tail,
-			_sBrush,
-			2.5f
-		);
+		//remove tails. add new head in front. length delta is 0.
 
 		switch (direction)
 		{
@@ -86,11 +63,48 @@ void SnekModel::Draw(ID2D1HwndRenderTarget* _renderTarget, ID2D1SolidColorBrush*
 			break;
 		}
 
-		//fifo
-		snekPath.push(body); //new tail is old body
-		snekPath.push(body2); //new tail is old body
-		snekPath.push(head); //new body is old head
-		snekPath.push(D2D1::Point2F(100 + this->xpos, 150 + this->ypos)); //new head
+		D2D1_POINT_2F trailer = snekPath.front();
+		snekPath.pop();
+		D2D1_POINT_2F trails = snekPath.front();
+		snekPath.pop();
+
+		std::queue<D2D1_POINT_2F> snekPathCache;
+
+		while (!snekPath.empty())
+		{
+			_renderTarget->DrawLine(
+				trailer,
+				trails,
+				_sBrush,
+				2.5f
+			);
+
+			trailer = trails;
+			snekPathCache.push(trailer);
+			trails = snekPath.front();
+			snekPath.pop();
+		}
+
+		_renderTarget->DrawLine(
+			trailer,
+			trails,
+			_sBrush,
+			2.5f
+		);
+
+		D2D1_POINT_2F head = D2D1::Point2F(100 + this->xpos, 150 + this->ypos);
+
+		_renderTarget->DrawLine(
+			trails,
+			head,
+			_sBrush,
+			2.5f
+		);
+
+		snekPathCache.push(trails); //new head
+		snekPathCache.push(head); //new head
+
+		snekPath = snekPathCache;
 	}
 	catch (COMException& ex)
 	{

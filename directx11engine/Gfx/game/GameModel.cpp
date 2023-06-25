@@ -109,6 +109,7 @@ void GameModel::Update(ID2D1HwndRenderTarget* _renderTarget, ID2D1SolidColorBrus
 	if (food.Intersects(snek))
 	{
 		weGotDinner = false;
+		snek.Grow();
 	}
 
 	//check for collision

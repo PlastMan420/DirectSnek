@@ -10,15 +10,15 @@ public:
 	void UpdateDirection(int dirEnum);
 	void Reset();
 	void Init();
+	int Grow();
 
 	int xpos;
 	int ypos;
 	bool positionsX;
 	bool positionsY;
 	int direction;
-	const int step = 50;
-
-	//dxdRect snekBox;
+	const int snakeBlockDistance = 50;
+	const int step = 5;
 
 private:
 	bool initRan = false;

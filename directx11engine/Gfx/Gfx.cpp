@@ -42,10 +42,10 @@ void Gfx::RenderFrame()
 	double ms = clock.GetMilisecondsElapsed();
 
 	// Update FPS
-	if (ms < 100.0)
-	{
-		return;
-	}
+	//if (ms < 10.0)
+	//{
+	//	return;
+	//}
 
 
 	BeginDraw();
@@ -71,7 +71,7 @@ void Gfx::CountFps()
 	if (ms > 1000.0)
 	{
 		this->lastFps = this->fpsCounter;
-		std::wstring txt = L"D2D: " + std::to_wstring(this->fpsCounter);
+		std::wstring txt = L"fps: " + std::to_wstring(this->fpsCounter);
 		
 		this->renderTarget->DrawTextW(
 			txt.c_str(),
@@ -86,7 +86,7 @@ void Gfx::CountFps()
 	}
 	else
 	{
-		std::wstring txt = L"D2D: " + std::to_wstring(this->lastFps);
+		std::wstring txt = L"fps: " + std::to_wstring(this->lastFps);
 
 		this->renderTarget->DrawTextW(
 			txt.c_str(),
