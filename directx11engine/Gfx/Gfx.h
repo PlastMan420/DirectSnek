@@ -20,6 +20,7 @@ public:
 	void BeginDraw();
 	void EndDraw();
 	void InitGame();
+	void DrawTray();
 
 	Camera camera;
 	GameModel game;

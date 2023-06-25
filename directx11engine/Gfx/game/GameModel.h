@@ -19,6 +19,7 @@ public:
 	ArenaModel arena;
 	SnekModel snek;
 	GoalModel food;
+	int score = 0;
 
 private:
 	D2D1_POINT_2F GenRange();

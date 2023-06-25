@@ -53,10 +53,25 @@ void Gfx::RenderFrame()
 	game.Update(renderTarget.Get(), sBrush.Get());
 
 	CountFps();
+	DrawTray();
 
 	EndDraw();
 
 	clock.Restart();
+}
+
+void Gfx::DrawTray()
+{
+	D2D1_SIZE_F renderTargetSize = renderTarget->GetSize();
+	std::wstring txt = L"SCORE " + std::to_wstring(this->game.score);
+
+	this->renderTarget->DrawTextW(
+		txt.c_str(),
+		txt.length(),
+		this->dwTextFormat.Get(),
+		D2D1::RectF(35, renderTargetSize.height-22, renderTargetSize.width, renderTargetSize.height),
+		sBrush.Get()
+	);
 }
 
 void Gfx::CountFps()

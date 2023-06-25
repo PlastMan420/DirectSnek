@@ -76,6 +76,7 @@ void GameModel::Init(ID2D1HwndRenderTarget* _renderTarget)
 void GameModel::Reset()
 {
 	snek.Reset();
+	this->score = 0;
 }
 
 D2D1_POINT_2F GameModel::GenRange()
@@ -110,6 +111,7 @@ void GameModel::Update(ID2D1HwndRenderTarget* _renderTarget, ID2D1SolidColorBrus
 	{
 		weGotDinner = false;
 		snek.Grow();
+		score += 1;
 	}
 
 	//check for collision

@@ -18,7 +18,7 @@ public:
 	bool positionsY;
 	int direction;
 	const int snakeBlockDistance = 50;
-	const int step = 5;
+	const int step = 1;
 
 private:
 	bool initRan = false;
