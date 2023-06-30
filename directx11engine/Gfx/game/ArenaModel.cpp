@@ -25,7 +25,7 @@ void ArenaModel::Draw(ID2D1HwndRenderTarget* renderTarget)
 		//HRESULT hr;
 		D2D1_SIZE_F rtSize = renderTarget->GetSize();
 
-		D2D1_RECT_F rect1 = D2D1::RectF(50, 100.0f, rtSize.width - 50, rtSize.height - 100.0f);
+		D2D1_RECT_F rect1 = D2D1::RectF(80, 130.0f, rtSize.width - 80, rtSize.height - 100.0f);
 
 		//this->renderTarget->BeginDraw();
 		renderTarget->DrawRectangle(rect1, bmBrush.Get(), 32.0f);
@@ -107,11 +107,11 @@ void ArenaModel::UseBrickTextureBrush(ID2D1HwndRenderTarget* renderTarget)
 
 bool ArenaModel::Intersects(BaseModel model)
 {
-	dxdRect arenaBoxTop(50, 0, 750, 1); //x: 50 -> 700, y: 100 -> 116
-	dxdRect arenaBoxBottom(50, 500, 750, 1); // x: 50 -> 700, y: 450: 466
+	dxdRect arenaBoxTop(50, 0, 750, 0); //x: 50 -> 700, y: 100 -> 116
+	dxdRect arenaBoxBottom(50, 530, 750, 0); // x: 50 -> 700, y: 450: 466
 
-	dxdRect arenaBoxRight(800, 120, 1, 600); // x: 750 -> 166, y: 120 -> 720
-	dxdRect arenaBoxLeft(10, 120, 1, 600); // x: 50 -> 66, y: 120: 720
+	dxdRect arenaBoxRight(800, 120, 0, 600); // x: 750 -> 166, y: 120 -> 720
+	dxdRect arenaBoxLeft(50, 120, 0, 600); // x: 50 -> 66, y: 120: 720
 
 	if (model.hitBox.Intersects(arenaBoxTop)) {
 		return true;

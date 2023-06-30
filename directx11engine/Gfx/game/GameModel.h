@@ -2,9 +2,8 @@
 #include "ArenaModel.h"
 #include "SnekModel.h"
 #include "GoalModel.h"
-#include <cstdlib>
-#include <ctime>
 #include "../../Helpers/ErrorLogger.h"
+#include <random>
 
 class GameModel
 {
@@ -24,4 +23,7 @@ public:
 private:
 	D2D1_POINT_2F GenRange();
 	bool weGotDinner = false;
+
+	// random device and number generator
+	std::random_device rd;
 };

@@ -32,10 +32,10 @@ void SnekModel::Draw(ID2D1HwndRenderTarget* _renderTarget, ID2D1SolidColorBrush*
 
 		if (snekPath.empty())
 		{
-			snekPath.push(D2D1::Point2F(350 + this->xpos, 150 + this->ypos)); //tail first in first out
-			snekPath.push(D2D1::Point2F(300 + this->xpos, 150 + this->ypos)); //body
-			snekPath.push(D2D1::Point2F(250 + this->xpos, 150 + this->ypos)); //body2
-			snekPath.push(D2D1::Point2F(200 + this->xpos, 150 + this->ypos)); //head
+			snekPath.push(D2D1::Point2F(450 + this->xpos, 150 + this->ypos)); //tail first in first out
+			snekPath.push(D2D1::Point2F(400 + this->xpos, 150 + this->ypos)); //body
+			snekPath.push(D2D1::Point2F(350 + this->xpos, 150 + this->ypos)); //body2
+			snekPath.push(D2D1::Point2F(300 + this->xpos, 150 + this->ypos)); //head
 		}
 
 		this->hitBox = dxdRect(150 + this->xpos, 150 + this->ypos, 50, 50);

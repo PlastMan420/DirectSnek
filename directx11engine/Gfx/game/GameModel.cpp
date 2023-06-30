@@ -81,11 +81,10 @@ void GameModel::Reset()
 
 D2D1_POINT_2F GameModel::GenRange()
 {
-	srand(time(0));
-	int xco = rand() % 301 + 150;
-	int yco = rand() % 301 + 150;
+	std::uniform_int_distribution<int> xp(100, 560);
+	std::uniform_int_distribution<int> yp(150, 320);
 
-	return D2D1::Point2F(xco, yco);
+	return D2D1::Point2F(xp(rd), yp(rd));
 }
 void GameModel::Clean()
 {
