@@ -19,7 +19,7 @@ int SnekModel::Grow()
 	return snekPath.size();
 }
 
-void SnekModel::Draw(ID2D1HwndRenderTarget* _renderTarget, ID2D1SolidColorBrush* _sBrush)
+void SnekModel::Draw(ID2D1DeviceContext1* d2dContext, ID2D1SolidColorBrush* sBrush)
 {
 	try {
 		HRESULT hr;
@@ -32,10 +32,7 @@ void SnekModel::Draw(ID2D1HwndRenderTarget* _renderTarget, ID2D1SolidColorBrush*
 
 		if (snekPath.empty())
 		{
-			snekPath.push(D2D1::Point2F(450 + this->xpos, 150 + this->ypos)); //tail first in first out
-			snekPath.push(D2D1::Point2F(400 + this->xpos, 150 + this->ypos)); //body
-			snekPath.push(D2D1::Point2F(350 + this->xpos, 150 + this->ypos)); //body2
-			snekPath.push(D2D1::Point2F(300 + this->xpos, 150 + this->ypos)); //head
+			GenerateSnek();
 		}
 
 		this->hitBox = dxdRect(150 + this->xpos, 150 + this->ypos, 50, 50);
@@ -72,10 +69,10 @@ void SnekModel::Draw(ID2D1HwndRenderTarget* _renderTarget, ID2D1SolidColorBrush*
 
 		while (!snekPath.empty())
 		{
-			_renderTarget->DrawLine(
+			d2dContext->DrawLine(
 				trailer,
 				trails,
-				_sBrush,
+				sBrush,
 				2.5f
 			);
 
@@ -85,19 +82,19 @@ void SnekModel::Draw(ID2D1HwndRenderTarget* _renderTarget, ID2D1SolidColorBrush*
 			snekPath.pop();
 		}
 
-		_renderTarget->DrawLine(
+		d2dContext->DrawLine(
 			trailer,
 			trails,
-			_sBrush,
+			sBrush,
 			2.5f
 		);
 
 		D2D1_POINT_2F head = D2D1::Point2F(100 + this->xpos, 150 + this->ypos);
 
-		_renderTarget->DrawLine(
+		d2dContext->DrawLine(
 			trails,
 			head,
-			_sBrush,
+			sBrush,
 			2.5f
 		);
 
@@ -142,8 +139,30 @@ void SnekModel::Reset()
 		snekPath.pop();
 	}
 
-	snekPath.push(D2D1::Point2F(350 + this->xpos, 150 + this->ypos)); //tail first in first out
-	snekPath.push(D2D1::Point2F(300 + this->xpos, 150 + this->ypos)); //body
-	snekPath.push(D2D1::Point2F(250 + this->xpos, 150 + this->ypos)); //body2
-	snekPath.push(D2D1::Point2F(200 + this->xpos, 150 + this->ypos)); //head
+	GenerateSnek();
+}
+
+void SnekModel::GenerateSnek()
+{
+	if(!snekPath.empty())
+	{
+		return;
+	}
+
+	int lengthAllowance = 600;
+	while (lengthAllowance > 200)
+	{
+		snekPath.push(D2D1::Point2F(lengthAllowance +this->xpos, 150 + this->ypos));
+		lengthAllowance -= 50;
+	}
+}
+
+void SnekModel::SpeedUp()
+{
+	if (step >= 2.0f)
+	{
+		return;
+	}
+
+	step += 0.02f;
 }

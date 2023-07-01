@@ -1,17 +1,6 @@
 #include "ArenaModel.h"
 
-void ArenaModel::clean()
-{
-	if (this->bmBrush) {
-		bmBrush->Release();
-	}
-
-	if (this->arenaBM) {
-		arenaBM->Release();
-	}
-}
-
-void ArenaModel::Draw(ID2D1HwndRenderTarget* renderTarget)
+void ArenaModel::Draw(ID2D1DeviceContext1* d2dContext)
 {
 	try {
 		HRESULT hr;
@@ -23,14 +12,14 @@ void ArenaModel::Draw(ID2D1HwndRenderTarget* renderTarget)
 		}
 
 		//HRESULT hr;
-		D2D1_SIZE_F rtSize = renderTarget->GetSize();
+		D2D1_SIZE_F rtSize = d2dContext->GetSize();
 
 		D2D1_RECT_F rect1 = D2D1::RectF(80, 130.0f, rtSize.width - 80, rtSize.height - 100.0f);
 
-		//this->renderTarget->BeginDraw();
-		renderTarget->DrawRectangle(rect1, bmBrush.Get(), 32.0f);
+		//this->d2dContext->BeginDraw();
+		d2dContext->DrawRectangle(rect1, bmBrush.Get(), 32.0f);
 		//COM_ERROR_IF_FAILED(hr, "Failed to draw arena");
-		//this->renderTarget->EndDraw();
+		//this->d2dContext->EndDraw();
 	}
 	catch (COMException& ex)
 	{
@@ -38,7 +27,7 @@ void ArenaModel::Draw(ID2D1HwndRenderTarget* renderTarget)
 	}
 }
 
-void ArenaModel::UseBrickTextureBrush(ID2D1HwndRenderTarget* renderTarget)
+void ArenaModel::UseBrickTextureBrush(ID2D1DeviceContext1* d2dContext)
 {
 	try
 	{
@@ -79,14 +68,14 @@ void ArenaModel::UseBrickTextureBrush(ID2D1HwndRenderTarget* renderTarget)
 			WICBitmapPaletteTypeCustom
 		);
 
-		renderTarget->CreateBitmapFromWicBitmap(
+		d2dContext->CreateBitmapFromWicBitmap(
 			wicConv,
 			NULL, //D2D BITMAP PROPERTIES
 			arenaBM.GetAddressOf()
 		);
 
 
-		hr = renderTarget->CreateBitmapBrush(
+		hr = d2dContext->CreateBitmapBrush(
 			arenaBM.Get(),
 			&bmBrush
 		);
@@ -129,9 +118,9 @@ bool ArenaModel::Intersects(BaseModel model)
 	return false;
 }
 
-void ArenaModel::Init(ID2D1HwndRenderTarget* renderTarget)
+void ArenaModel::Init(ID2D1DeviceContext1* d2dContext)
 {
-	UseBrickTextureBrush(renderTarget);
+	UseBrickTextureBrush(d2dContext);
 
 	initRan = true;
 }

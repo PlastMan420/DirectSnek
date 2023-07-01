@@ -4,6 +4,7 @@ Gfx::Gfx()
 {
 	this->fpsCounter = 0;
 	this->lastFps = 0;
+	this->finishedInit = false;
 }
 
 Gfx::~Gfx()
@@ -18,54 +19,66 @@ bool Gfx::Initialize(HWND hwnd, int width, int height)
 	this->aspectRatio = static_cast<float>(this->windowWidth) / static_cast<float>(this->windowHeight);
 	this->fpsTimer.Start();
 	this->clock.Start();
+
+	if (!InitDevice(hwnd))
+		return false;
+
 	if(!InitializeDirectX(hwnd))
 		return false;
 
+	finishedInit = true;
 
 	InitGame();
+
 	//if (!InitializeShaders())
 	//	return false;
 	//
 	//if (!InitializeScene())
 	//	return false;
-
 	return true;
+}
+
+bool Gfx::isReady()
+{
+	return finishedInit;
 }
 
 void Gfx::InitGame()
 {
-	game.Init(renderTarget.Get());
+	game.Init(d2dContext.Get());
 }
 
 void Gfx::RenderFrame()
 {
-	double ms = clock.GetMilisecondsElapsed();
+	try {
+		HRESULT hr;
+		double ms = clock.GetMilisecondsElapsed();
 
-	// Update FPS
-	//if (ms < 10.0)
-	//{
-	//	return;
-	//}
+		d2dContext->BeginDraw();
+		ClearScreen(0.0f, 0.0f, 0.0f);
+		game.Update(d2dContext.Get(), sBrush.Get());
 
+		CountFps();
+		DrawTray();
 
-	BeginDraw();
-	ClearScreen(0.0f, 0.0f, 0.0f);
-	game.Update(renderTarget.Get(), sBrush.Get());
-
-	CountFps();
-	DrawTray();
-
-	EndDraw();
-
-	clock.Restart();
+		hr = d2dContext->EndDraw();
+		COM_ERROR_IF_FAILED(hr, "Failed to run d2dcontext.EndDraw()");
+		hr = swapChain->Present(1, 0);
+		COM_ERROR_IF_FAILED(hr, "Failed to run swapChain.Present1()");
+		clock.Restart();
+	}
+	catch (COMException& ex)
+	{
+		ErrorLogger::Log(ex);
+	}
 }
 
 void Gfx::DrawTray()
 {
-	D2D1_SIZE_F renderTargetSize = renderTarget->GetSize();
+	D2D1_SIZE_F renderTargetSize = d2dContext->GetSize();
 	std::wstring txt = L"SCORE " + std::to_wstring(this->game.score);
 
-	this->renderTarget->DrawTextW(
+	this->d2dContext->DrawTextW(
 		txt.c_str(),
 		txt.length(),
 		this->dwTextFormat.Get(),
@@ -76,7 +89,7 @@ void Gfx::DrawTray()
 
 void Gfx::CountFps()
 {
-	D2D1_SIZE_F renderTargetSize = renderTarget->GetSize();
+	D2D1_SIZE_F renderTargetSize = d2dContext->GetSize();
 
 	this->fpsCounter += 1;
 
@@ -88,7 +101,7 @@ void Gfx::CountFps()
 		this->lastFps = this->fpsCounter;
 		std::wstring txt = L"fps: " + std::to_wstring(this->fpsCounter);
 		
-		this->renderTarget->DrawTextW(
+		this->d2dContext->DrawTextW(
 			txt.c_str(),
 			txt.length(),
 			this->dwTextFormat.Get(),
@@ -103,7 +116,7 @@ void Gfx::CountFps()
 	{
 		std::wstring txt = L"fps: " + std::to_wstring(this->lastFps);
 
-		this->renderTarget->DrawTextW(
+		this->d2dContext->DrawTextW(
 			txt.c_str(),
 			txt.length(),
 			this->dwTextFormat.Get(),
@@ -113,67 +126,172 @@ void Gfx::CountFps()
 	}
 }
 
-bool Gfx::InitDeviceAndAdapter(HWND hwnd)
+bool Gfx::InitDevice(HWND hwnd)
 {
-	HRESULT hr;
+	try {
+		HRESULT hr;
 
-	std::vector<AdapterData> adapters = AdapterReader::GetAdapters();
+		std::vector<AdapterData> adapters = AdapterReader::GetAdapters();
 
-	if (adapters.size() < 1) {
-		ErrorLogger::Log("No DXGI Adapters found.");
+		if (adapters.size() < 1) {
+			ErrorLogger::Log("No DXGI Adapters found.");
+			return false;
+		}
+
+		DXGI_SWAP_CHAIN_DESC scd;
+
+		ZeroMemory(&scd, sizeof(DXGI_SWAP_CHAIN_DESC));
+
+		// INIT DISPLAY
+		scd.BufferDesc.Height = this->windowHeight;
+		scd.BufferDesc.Width = this->windowWidth;
+		scd.BufferDesc.RefreshRate.Numerator = 60;
+		scd.BufferDesc.RefreshRate.Denominator = 1;
+		scd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		scd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+		scd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+
+		//important //
+		scd.SampleDesc.Count = 1;
+		scd.SampleDesc.Quality = 0;
+		///
+
+		scd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+		scd.BufferCount = 1;
+		scd.OutputWindow = hwnd;
+		scd.Windowed = TRUE;
+		scd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+		scd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+
+		// INIT DEVICE AND SWAPCHAIN
+
+		// This flag adds support for surfaces with a different color channel ordering than the API default.
+		// You need it for compatibility with Direct2D.
+		UINT creationFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
+
+		hr = D3D11CreateDevice(
+			nullptr,                    // specify null to use the default adapter
+			D3D_DRIVER_TYPE_HARDWARE,
+			0,
+			creationFlags,              // optionally set debug and Direct2D compatibility flags
+			featureLevels,              // list of feature levels this app can support
+			ARRAYSIZE(featureLevels),   // number of possible feature levels
+			D3D11_SDK_VERSION,
+			&device,                    // returns the Direct3D device created
+			nullptr,            // returns feature level of device created
+			d3d11DeviceContext.GetAddressOf()                    // returns the device immediate context
+		);
+		COM_ERROR_IF_FAILED(hr, "Failed to create device and swapchain.");
+
+		// Obtain the underlying DXGI device of the Direct3D11 device.
+		hr = this->device.As(&dxgiDevice);
+		COM_ERROR_IF_FAILED(hr, "Failed to Obtain the underlying DXGI device of the Direct3D11 device.");
+
+		return true;
+	}
+	catch (COMException& ex)
+	{
+		ErrorLogger::Log(ex);
 		return false;
 	}
+}
 
-	DXGI_SWAP_CHAIN_DESC scd;
+bool Gfx::CreateD2DContext()
+{
+	try {
+		HRESULT hr;
 
-	ZeroMemory(&scd, sizeof(DXGI_SWAP_CHAIN_DESC));
+		hr = d2dfactory->CreateDevice(dxgiDevice.Get(), d2dDevice.GetAddressOf());
+		COM_ERROR_IF_FAILED(hr, "Failed to create D2D Device.");
 
-	// INIT DISPLAY
-	scd.BufferDesc.Height = this->windowHeight;
-	scd.BufferDesc.Width = this->windowWidth;
-	scd.BufferDesc.RefreshRate.Numerator = 60;
-	scd.BufferDesc.RefreshRate.Denominator = 1;
-	scd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	scd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-	scd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+		hr = d2dDevice->CreateDeviceContext(
+			D2D1_DEVICE_CONTEXT_OPTIONS_NONE,
+			d2dContext.GetAddressOf()
+		);
+		COM_ERROR_IF_FAILED(hr, "Failed to create D2D Device Context.");
 
-	//important //
-	scd.SampleDesc.Count = 1;
-	scd.SampleDesc.Quality = 0;
-	///
+		// Direct2D needs the dxgi version of the backbuffer surface pointer.
+		swapChain->GetBuffer(0, IID_PPV_ARGS(dxgiBackBuffer.GetAddressOf()));
 
-	scd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	scd.BufferCount = 1;
-	scd.OutputWindow = hwnd;
-	scd.Windowed = TRUE;
-	scd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-	scd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+		// Now we set up the Direct2D render target bitmap linked to the swapchain. 
+		// Whenever we render to this bitmap, it is directly rendered to the 
+		// swap chain associated with the window.
+		D2D1_BITMAP_PROPERTIES1 bitmapProperties =
+			D2D1::BitmapProperties1(
+				D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW,
+				D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_IGNORE),
+				96,
+				96
+			);
 
-	// INIT DEVICE AND SWAPCHAIN
+		// Get a D2D surface from the DXGI back buffer to use as the D2D render target.
+		hr = d2dContext->CreateBitmapFromDxgiSurface(
+			dxgiBackBuffer.Get(),
+			&bitmapProperties,
+			d2dTargetBitmap.GetAddressOf()
+		);
+		COM_ERROR_IF_FAILED(hr, "Failed to CreateBitmapFromDxgiSurface");
 
-	Microsoft::WRL::ComPtr<ID3D11Texture2D> backBuffer;
+		// Now we can set the Direct2D render target.
+		d2dContext->SetTarget(d2dTargetBitmap.Get());
 
-	hr = D3D11CreateDeviceAndSwapChain(
-		adapters[0].pAdapter, // reference to adapter
-		D3D_DRIVER_TYPE_UNKNOWN, // driver type, unknown means unspecified
-		NULL, //software driver type
-		NULL, // runtime layers
-		NULL, //D3D feature level
-		0, // number of feature levels
-		D3D11_SDK_VERSION, // version, use sdk version for direct xtk
-		&scd, // swapchain description
-		this->swapChain.GetAddressOf(), // swapchain address
-		this->device.GetAddressOf(), // device address
-		NULL, // supported feature level
-		this->deviceContext.GetAddressOf() // device context address.
-	);
-	COM_ERROR_IF_FAILED(hr, "Failed to create device and swapchain.");
+	}
+	catch (COMException& ex)
+	{
+		ErrorLogger::Log(ex);
+		return false;
+	}
+}
 
-	hr = this->swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(backBuffer.GetAddressOf()));
-	COM_ERROR_IF_FAILED(hr, "GetBuffer Failed");
+bool Gfx::InitSwapChain(HWND hwnd)
+{
+	try{
+		HRESULT hr;
 
-	hr = this->device->CreateRenderTargetView(backBuffer.Get(), NULL, this->renderTargetView.GetAddressOf());
-	COM_ERROR_IF_FAILED(hr, "Failed to create render target view.");
+		// Allocate a descriptor.
+		DXGI_SWAP_CHAIN_DESC1 swapChainDesc = { 0 };
+		swapChainDesc.Width = 0;                           // use automatic sizing
+		swapChainDesc.Height = 0;
+		swapChainDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM; // this is the most common swapchain format
+		swapChainDesc.Stereo = false;
+		swapChainDesc.SampleDesc.Count = 1;                // don't use multi-sampling
+		swapChainDesc.SampleDesc.Quality = 0;
+		swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+		swapChainDesc.BufferCount = 2;                     // use double buffering to enable flip
+		swapChainDesc.Scaling = DXGI_SCALING_NONE;
+		swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL; // all apps must use this SwapEffect
+		swapChainDesc.Flags = 0;
+	
+		// Identify the physical adapter (GPU or card) this device is runs on.
+		Microsoft::WRL::ComPtr<IDXGIAdapter> dxgiAdapter;
+		dxgiDevice->GetAdapter(&dxgiAdapter);
+	
+		Microsoft::WRL::ComPtr<IDXGIFactory2> dxgiFactory;
+		dxgiAdapter->GetParent(IID_PPV_ARGS(&dxgiFactory));
+	
+		hr = dxgiFactory->CreateSwapChainForHwnd(
+			device.Get(),
+			hwnd,
+			&swapChainDesc,
+			nullptr,
+			nullptr,    // allow on all displays
+			swapChain.GetAddressOf()
+		);
+		COM_ERROR_IF_FAILED(hr, "Failed to CreateSwapChainForHwnd");
+
+		// Ensure that DXGI doesn't queue more than one frame at a time.
+		dxgiDevice->SetMaximumFrameLatency(1);
+
+		// Get the backbuffer for this window which is be the final 3D render target.
+		swapChain->GetBuffer(0, IID_PPV_ARGS(backBuffer.GetAddressOf()));
+
+		return true;
+	}
+	catch (COMException& ex)
+	{
+		ErrorLogger::Log(ex);
+		return false;
+	}
 }
 
 bool Gfx::InitDepthStencilAndBlenderState()
@@ -204,7 +322,7 @@ bool Gfx::InitDepthStencilAndBlenderState()
 	COM_ERROR_IF_FAILED(hr, "Failed to create depth stencil view.");
 
 	// output merger.
-	this->deviceContext->OMSetRenderTargets(1, this->renderTargetView.GetAddressOf(), this->depthStencilView.Get());
+	this->d3d11DeviceContext->OMSetRenderTargets(1, this->renderTargetView.GetAddressOf(), this->depthStencilView.Get());
 
 	//Create depth stencil state.
 	//D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
@@ -220,7 +338,7 @@ bool Gfx::InitDepthStencilAndBlenderState()
 	CD3D11_VIEWPORT viewport(0.0f, 0.0f, static_cast<float>(this->windowWidth), static_cast<float>(this->windowHeight));
 
 	// if you want split screen like in older games, you can add more viewports.
-	this->deviceContext->RSSetViewports(1, &viewport);
+	this->d3d11DeviceContext->RSSetViewports(1, &viewport);
 
 	//Create Rasterizer State
 	CD3D11_RASTERIZER_DESC rasterizerDesc(D3D11_DEFAULT);
@@ -246,15 +364,21 @@ bool Gfx::InitDepthStencilAndBlenderState()
 	COM_ERROR_IF_FAILED(hr, "Failed to create blender state.");
 }
 
+bool Gfx::InitEffects()
+{
+	HRESULT hr;
+
+	return true;
+}
+
 bool Gfx::InitializeDirectX(HWND hwnd)
 {
 	try {
 		HRESULT hr;
 
-		//InitDeviceAndAdapter(hwnd);
 		//InitDepthStencilAndBlenderState();
 
-		//spriteBatch = std::make_unique<DirectX::SpriteBatch>(this->deviceContext.Get());
+		//spriteBatch = std::make_unique<DirectX::SpriteBatch>(this->d3d11DeviceContext.Get());
 		//spriteFont = std::make_unique<DirectX::SpriteFont>(this->device.Get(), L"Data\\Fonts\\comic_sans_ms_16.spritefont");
 
 		////Create sampler description for sampler state
@@ -268,21 +392,26 @@ bool Gfx::InitializeDirectX(HWND hwnd)
 
 
 		////init sprites
-		//spriteBatch = std::make_unique<DirectX::SpriteBatch>(this->deviceContext.Get());
+		//spriteBatch = std::make_unique<DirectX::SpriteBatch>(this->d3d11DeviceContext.Get());
 		//spriteFont = std::make_unique<DirectX::SpriteFont>(this->device.Get(), L"Data\\Fonts\\comic_sans_ms_16.spritefont");
 
 		// INIT D2D
 		hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, d2dfactory.GetAddressOf());
 		COM_ERROR_IF_FAILED(hr, "Failed init D2D Factory: Create Factory failed");
 
-		RECT rect;
-		GetClientRect(hwnd, &rect);
-		hr = d2dfactory->CreateHwndRenderTarget(
-			D2D1::RenderTargetProperties(),
-			D2D1::HwndRenderTargetProperties(hwnd, D2D1::SizeU(rect.right, rect.bottom)),
-			&renderTarget
-		);
-		COM_ERROR_IF_FAILED(hr, "Failed init D2D Factory: Create Render Target Failed.");
+		/*RECT rect;
+		GetClientRect(hwnd, &rect);*/
+
+		//hr = d2dfactory->CreateHwndRenderTarget(
+		//	D2D1::RenderTargetProperties(),
+		//	D2D1::HwndRenderTargetProperties(hwnd, D2D1::SizeU(rect.right, rect.bottom)),
+		//	renderTarget.GetAddressOf()
+		//);
+		//COM_ERROR_IF_FAILED(hr, "Failed init D2D Factory: Create Render Target Failed.");
+
+		// https://learn.microsoft.com/en-us/windows/win32/direct2d/devices-and-device-contexts
+		InitSwapChain(hwnd);
+		CreateD2DContext();
 
 		// Init main brush
 		InitSolidBrush();
@@ -375,13 +504,13 @@ bool Gfx::InitializeScene()
 		//hr = DirectX::CreateWICTextureFromFile(this->device.Get(), L"Data\\Textures\\pinksquare.jpg", nullptr, pinkTexture.GetAddressOf());
 		//COM_ERROR_IF_FAILED(hr, "Failed to create wic texture from file.");
 
-		//HRESULT hr = this->cb_vs_vertexshader.Initialize(this->device.Get(), this->deviceContext.Get());
+		//HRESULT hr = this->cb_vs_vertexshader.Initialize(this->device.Get(), this->d3d11DeviceContext.Get());
 		//COM_ERROR_IF_FAILED(hr, "Failed to initialize constant buffer.");
 
-		//hr = this->cb_ps_pixelshader.Initialize(this->device.Get(), this->deviceContext.Get());
+		//hr = this->cb_ps_pixelshader.Initialize(this->device.Get(), this->d3d11DeviceContext.Get());
 		//COM_ERROR_IF_FAILED(hr, "Failed to initialize constant buffer.");
 
-		/*if (!model.Initialize(this->device.Get(), this->deviceContext.Get(), this->pavementTexture.Get(), cb_vs_vertexshader))
+		/*if (!model.Initialize(this->device.Get(), this->d3d11DeviceContext.Get(), this->pavementTexture.Get(), cb_vs_vertexshader))
 		{
 			return false;
 		}*/
@@ -399,23 +528,23 @@ bool Gfx::InitializeScene()
 }
 
 void Gfx::ClearScreen(float r, float g, float b) {
-	this->renderTarget->Clear(D2D1::ColorF(r, g, b));
+	this->d2dContext->Clear(D2D1::ColorF(r, g, b));
 }
 
 void Gfx::InitSolidBrush()
 {
-	HRESULT hr = renderTarget->CreateSolidColorBrush(D2D1::ColorF(255.0f, 255.0f, 255.0f, 1), &sBrush);
+	HRESULT hr = d2dContext->CreateSolidColorBrush(D2D1::ColorF(255.0f, 255.0f, 255.0f, 1), &sBrush);
 	COM_ERROR_IF_FAILED(hr, "Failed to initialize brush");
 }
 
 void Gfx::BeginDraw()
 {
-	renderTarget->BeginDraw();
+	d2dContext->BeginDraw();
 }
 
 void Gfx::EndDraw()
 {
-	renderTarget->EndDraw();
+	d2dContext->EndDraw();
 }
 
 //rtSize.width / 2 - 100.0f,

@@ -1,5 +1,5 @@
 #pragma once
-#include <d2d1.h>
+#include <d2d1_2.h>
 #include <SimpleMath.h>
 #include <wrl/client.h>
 

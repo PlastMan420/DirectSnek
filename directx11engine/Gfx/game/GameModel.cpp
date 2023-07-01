@@ -67,9 +67,9 @@ void GameModel::RunDemo()
 
 }
 
-void GameModel::Init(ID2D1HwndRenderTarget* _renderTarget)
+void GameModel::Init(ID2D1DeviceContext1* d2dcontext)
 {
-	arena.Init(_renderTarget);
+	arena.Init(d2dcontext);
 	snek.Init();
 }
 
@@ -88,13 +88,12 @@ D2D1_POINT_2F GameModel::GenRange()
 }
 void GameModel::Clean()
 {
-	arena.clean();
 }
 
-void GameModel::Update(ID2D1HwndRenderTarget* _renderTarget, ID2D1SolidColorBrush* _sBrush)
+void GameModel::Update(ID2D1DeviceContext1* d2dcontext, ID2D1SolidColorBrush* sBrush)
 {
 	//draw arena
-	arena.Draw(_renderTarget);
+	arena.Draw(d2dcontext);
 
 	if (!weGotDinner)
 	{
@@ -104,12 +103,13 @@ void GameModel::Update(ID2D1HwndRenderTarget* _renderTarget, ID2D1SolidColorBrus
 		weGotDinner = true;
 	}
 
-	food.Draw(_renderTarget);
+	food.Draw(d2dcontext);
 
 	if (food.Intersects(snek))
 	{
 		weGotDinner = false;
 		snek.Grow();
+		snek.SpeedUp();
 		score += 1;
 	}
 
@@ -119,7 +119,7 @@ void GameModel::Update(ID2D1HwndRenderTarget* _renderTarget, ID2D1SolidColorBrus
 	}
 
 	//draw snek
-	snek.Draw(_renderTarget, _sBrush);
+	snek.Draw(d2dcontext, sBrush);
 }
 
 void GameModel::UpdateDirection(int dirEnum)

@@ -7,10 +7,9 @@
 class ArenaModel: public BaseModel
 {
 public:
-    void Draw(ID2D1HwndRenderTarget* renderTarget);
-    void clean();
+    void Draw(ID2D1DeviceContext1* d2dContext);
     bool Intersects(BaseModel model);
-    void Init(ID2D1HwndRenderTarget* renderTarget);
+    void Init(ID2D1DeviceContext1* d2dContext);
 
 private:
     bool initRan = false;
@@ -18,5 +17,5 @@ private:
     Microsoft::WRL::ComPtr<ID2D1BitmapBrush> bmBrush;
     Microsoft::WRL::ComPtr<ID2D1Bitmap> arenaBM;
 
-    void UseBrickTextureBrush(ID2D1HwndRenderTarget* _renderTarget);
+    void UseBrickTextureBrush(ID2D1DeviceContext1* d2dContext);
 };

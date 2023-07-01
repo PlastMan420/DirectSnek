@@ -11,9 +11,9 @@ public:
 	void Reset();
 	void RunDemo();
 	void Clean();
-	void Update(ID2D1HwndRenderTarget* _renderTarget, ID2D1SolidColorBrush* _sBrush);
+	void Update(ID2D1DeviceContext1* d2dContext, ID2D1SolidColorBrush* sBrush);
 	void UpdateDirection(int dirEnum);
-	void Init(ID2D1HwndRenderTarget* _renderTarget);
+	void Init(ID2D1DeviceContext1* d2dContext);
 
 	ArenaModel arena;
 	SnekModel snek;
