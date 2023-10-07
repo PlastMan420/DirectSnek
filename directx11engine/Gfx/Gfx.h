@@ -22,7 +22,6 @@ public:
 	void EndDraw();
 	void InitGame();
 	void DrawTray();
-	bool isReady();
 
 	Camera camera;
 	GameModel game;
@@ -41,7 +40,6 @@ private:
 
 	int fpsCounter;
 	int lastFps;
-	bool finishedInit;
 
 	//DXGI COM Pointers
 	// D3D11 Device
@@ -82,7 +80,7 @@ private:
 	Microsoft::WRL::ComPtr<IDWriteTextFormat> dwTextFormat;
 
 	// Effects
-	Microsoft::WRL::ComPtr<ID2D1Effect> gaussianBlurEffect;
+	//Microsoft::WRL::ComPtr<ID2D1Effect> gaussianBlurEffect;
 
 	// Textures
 	//Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> texture;

@@ -94,6 +94,8 @@ void GameModel::Update(ID2D1DeviceContext1* d2dcontext, ID2D1SolidColorBrush* sB
 {
 	//draw arena
 	arena.Draw(d2dcontext);
+	//draw snek
+	snek.Draw(d2dcontext, sBrush);
 
 	if (!weGotDinner)
 	{
@@ -114,12 +116,9 @@ void GameModel::Update(ID2D1DeviceContext1* d2dcontext, ID2D1SolidColorBrush* sB
 	}
 
 	//check for collision
-	if (arena.Intersects(snek)) {
+	if (!arena.Intersects(snek)) {
 		Reset();
 	}
-
-	//draw snek
-	snek.Draw(d2dcontext, sBrush);
 }
 
 void GameModel::UpdateDirection(int dirEnum)

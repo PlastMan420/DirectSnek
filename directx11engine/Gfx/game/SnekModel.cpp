@@ -35,10 +35,10 @@ void SnekModel::Draw(ID2D1DeviceContext1* d2dContext, ID2D1SolidColorBrush* sBru
 			GenerateSnek();
 		}
 
-		this->hitBox = dxdRect(150 + this->xpos, 150 + this->ypos, 50, 50);
+		this->hitBox = dxdRect(164 + this->xpos, 150 + this->ypos, 28, 28);
 
-		if (xpos < 0 || xpos > 600) Reset();
-		if (ypos < 0 || ypos > 600) Reset();
+	/*	if (xpos < 0 || xpos > 600) Reset();
+		if (ypos < 0 || ypos > 600) Reset();*/
 
 		//remove tails. add new head in front. length delta is 0.
 
@@ -164,5 +164,5 @@ void SnekModel::SpeedUp()
 		return;
 	}
 
-	step += 0.02f;
+	step += 0.06f;
 }

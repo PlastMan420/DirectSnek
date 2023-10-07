@@ -96,22 +96,10 @@ void ArenaModel::UseBrickTextureBrush(ID2D1DeviceContext1* d2dContext)
 
 bool ArenaModel::Intersects(BaseModel model)
 {
-	dxdRect arenaBoxTop(50, 0, 750, 0); //x: 50 -> 700, y: 100 -> 116
-	dxdRect arenaBoxBottom(50, 530, 750, 0); // x: 50 -> 700, y: 450: 466
+	// window -> 800 x 600
+	dxdRect arena(155, 140, 645, 370);
 
-	dxdRect arenaBoxRight(800, 120, 0, 600); // x: 750 -> 166, y: 120 -> 720
-	dxdRect arenaBoxLeft(50, 120, 0, 600); // x: 50 -> 66, y: 120: 720
-
-	if (model.hitBox.Intersects(arenaBoxTop)) {
-		return true;
-	}
-	else if (model.hitBox.Intersects(arenaBoxBottom)) {
-		return true;
-	}
-	else if (model.hitBox.Intersects(arenaBoxRight)) {
-		return true;
-	}
-	else if (model.hitBox.Intersects(arenaBoxLeft)) {
+	if (arena.Contains(model.hitBox)) {
 		return true;
 	}
 

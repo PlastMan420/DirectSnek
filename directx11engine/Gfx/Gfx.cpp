@@ -4,7 +4,6 @@ Gfx::Gfx()
 {
 	this->fpsCounter = 0;
 	this->lastFps = 0;
-	this->finishedInit = false;
 }
 
 Gfx::~Gfx()
@@ -26,21 +25,14 @@ bool Gfx::Initialize(HWND hwnd, int width, int height)
 	if(!InitializeDirectX(hwnd))
 		return false;
 
-	finishedInit = true;
-
-	InitGame();
-
-	//if (!InitializeShaders())
-	//	return false;
-	//
+	if (!InitializeShaders())
+		return false;
+	
 	//if (!InitializeScene())
 	//	return false;
-	return true;
-}
 
-bool Gfx::isReady()
-{
-	return finishedInit;
+	InitGame();
+	return true;
 }
 
 void Gfx::InitGame()
@@ -64,7 +56,7 @@ void Gfx::RenderFrame()
 		hr = d2dContext->EndDraw();
 		COM_ERROR_IF_FAILED(hr, "Failed to run d2dcontext.EndDraw()");
 		hr = swapChain->Present(1, 0);
-		COM_ERROR_IF_FAILED(hr, "Failed to run swapChain.Present1()");
+		COM_ERROR_IF_FAILED(hr, "Failed to run swapChain.Present()");
 		clock.Restart();
 	}
 	catch (COMException& ex)
@@ -367,6 +359,8 @@ bool Gfx::InitDepthStencilAndBlenderState()
 bool Gfx::InitEffects()
 {
 	HRESULT hr;
+	
+	//hr = d2dContext->CreateEffect(CLSID_D2D1GaussianBlur, gaussianBlurEffect.GetAddressOf());
 
 	return true;
 }
