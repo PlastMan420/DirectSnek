@@ -161,13 +161,6 @@
     <ClCompile Include="Gfx\Camera.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Gfx\Gfx.cpp" />
-    <ClCompile Include="Gfx\imgui\imgui_impl_dx11.cpp" />
-    <ClCompile Include="Gfx\imgui\imgui_impl_dx12.cpp" />
-    <ClCompile Include="Gfx\imgui\imgui_impl_win32.cpp" />
-    <ClCompile Include="Gfx\imgui\imgui.cpp" />
-    <ClCompile Include="Gfx\imgui\imgui_draw.cpp" />
-    <ClCompile Include="Gfx\imgui\imgui_tables.cpp" />
-    <ClCompile Include="Gfx\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Helpers\ErrorLogger.cpp" />
     <ClCompile Include="Keyboard\KeyboardClass.cpp" />
     <ClCompile Include="Keyboard\KeyboardEvent.cpp" />
@@ -185,6 +178,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Adapter\AdapterReader.h" />
+    <ClInclude Include="Gfx\Bloom.h" />
     <ClInclude Include="Gfx\game\GameModel.h" />
     <ClInclude Include="Gfx\game\ArenaModel.h" />
     <ClInclude Include="Gfx\game\GoalModel.h" />
@@ -194,15 +188,6 @@
     <ClInclude Include="Gfx\ConstantBuffer.h" />
     <ClInclude Include="Gfx\ConstantBufferTypes.h" />
     <ClInclude Include="Gfx\Gfx.h" />
-    <ClInclude Include="Gfx\imgui\imgui_impl_dx11.h" />
-    <ClInclude Include="Gfx\imgui\imgui_impl_dx12.h" />
-    <ClInclude Include="Gfx\imgui\imgui_impl_win32.h" />
-    <ClInclude Include="Gfx\imgui\imconfig.h" />
-    <ClInclude Include="Gfx\imgui\imgui.h" />
-    <ClInclude Include="Gfx\imgui\imgui_internal.h" />
-    <ClInclude Include="Gfx\imgui\imstb_rectpack.h" />
-    <ClInclude Include="Gfx\imgui\imstb_textedit.h" />
-    <ClInclude Include="Gfx\imgui\imstb_truetype.h" />
     <ClInclude Include="Gfx\IndexBuffer.h" />
     <ClInclude Include="Helpers\ErrorLogger.h" />
     <ClInclude Include="Keyboard\KeyboardClass.h" />
@@ -235,9 +220,6 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.1</ShaderModel>
     </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Gfx\imgui\version.txt" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="data\textures\brick.png" />

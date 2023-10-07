@@ -90,27 +90,6 @@
     <ClCompile Include="Helpers\Timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Gfx\imgui\imgui.cpp">
-      <Filter>Source Files\Gfx\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="Gfx\imgui\imgui_draw.cpp">
-      <Filter>Source Files\Gfx\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="Gfx\imgui\imgui_impl_dx11.cpp">
-      <Filter>Source Files\Gfx\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="Gfx\imgui\imgui_impl_dx12.cpp">
-      <Filter>Source Files\Gfx\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="Gfx\imgui\imgui_impl_win32.cpp">
-      <Filter>Source Files\Gfx\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="Gfx\imgui\imgui_tables.cpp">
-      <Filter>Source Files\Gfx\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="Gfx\imgui\imgui_widgets.cpp">
-      <Filter>Source Files\Gfx\imgui</Filter>
-    </ClCompile>
     <ClCompile Include="Helpers\COMException.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -182,33 +161,6 @@
     <ClInclude Include="Helpers\Timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Gfx\imgui\imconfig.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Gfx\imgui\imgui.h">
-      <Filter>Header Files\Gfx\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="Gfx\imgui\imgui_impl_dx11.h">
-      <Filter>Header Files\Gfx\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="Gfx\imgui\imgui_impl_dx12.h">
-      <Filter>Header Files\Gfx\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="Gfx\imgui\imgui_impl_win32.h">
-      <Filter>Header Files\Gfx\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="Gfx\imgui\imgui_internal.h">
-      <Filter>Header Files\Gfx\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="Gfx\imgui\imstb_rectpack.h">
-      <Filter>Header Files\Gfx\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="Gfx\imgui\imstb_textedit.h">
-      <Filter>Header Files\Gfx\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="Gfx\imgui\imstb_truetype.h">
-      <Filter>Header Files\Gfx\imgui</Filter>
-    </ClInclude>
     <ClInclude Include="Helpers\COMException.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -227,6 +179,9 @@
     <ClInclude Include="Gfx\game\GoalModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Gfx\Bloom.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\vertexshader.hlsl">
@@ -235,9 +190,6 @@
     <FxCompile Include="Shaders\PixelShader.hlsl">
       <Filter>Resource Files</Filter>
     </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Gfx\imgui\version.txt" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="data\textures\brick.png">
